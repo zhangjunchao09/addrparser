@@ -8,6 +8,7 @@ import tech.spiro.addrparser.io.RegionDataInput;
 
 /**
  * The engine to parse {@link Point} or longitude/latitude pair to {@link Location}.
+ *
  * @author Spiro Huang
  * @since 1.0
  */
@@ -24,13 +25,15 @@ public class LocationParserEngine {
      * Province and city set mapping
      * Key: province code  Value: province provCitySetMap
      */
-    private Map<Integer, Set<RegionInfo>> provCitySetMap = new HashMap<>();
+    private Map<String, Set<RegionInfo>> provCitySetMap = new HashMap<>();
 
     /**
      * City and district or street set mapping
      * Key: city code Value: district or street
      */
-    private Map<Integer, Set<RegionInfo>> cityDistrictSetMap = new HashMap<>();
+    private Map<String, Set<RegionInfo>> cityDistrictSetMap = new HashMap<>();
+
+    private Map<String, Set<RegionInfo>> districtStreetSetMap = new HashMap<>();
 
     public LocationParserEngine(RegionDataInput regionDataInput) {
         this.regionDataInput = regionDataInput;
@@ -74,29 +77,40 @@ public class LocationParserEngine {
         }
 
         if (regionLevel == RegionLevel.CITY) {
-            Integer provCode = regionInfo.getParentCode();
+            String provCode = regionInfo.getParentCode();
             Set<RegionInfo> provCitySet = provCitySetMap.get(provCode);
             if (provCitySet == null) {
                 provCitySet = new HashSet<>();
-                provCitySetMap.put(provCode, provCitySet);
             }
             provCitySet.add(regionInfo);
+            provCitySetMap.put(provCode, provCitySet);
             return;
         }
 
-        if (regionLevel == RegionLevel.DISTRICT || regionLevel == RegionLevel.STREET) {
-            Integer cityCode = regionInfo.getParentCode();
+        if (regionLevel == RegionLevel.DISTRICT) {
+            String cityCode = regionInfo.getParentCode();
             Set<RegionInfo> cityDistrictSet = cityDistrictSetMap.get(cityCode);
             if (cityDistrictSet == null) {
                 cityDistrictSet = new HashSet<>();
-                cityDistrictSetMap.put(cityCode, cityDistrictSet);
             }
             cityDistrictSet.add(regionInfo);
+            cityDistrictSetMap.put(cityCode, cityDistrictSet);
+        }
+
+        if (regionLevel == RegionLevel.STREET) {
+            String districtCode = regionInfo.getParentCode();
+            Set<RegionInfo> districtStreetSet = districtStreetSetMap.get(districtCode);
+            if (districtStreetSet == null) {
+                districtStreetSet = new HashSet<>();
+            }
+            districtStreetSet.add(regionInfo);
+            districtStreetSetMap.put(districtCode, districtStreetSet);
         }
     }
 
     /**
      * Get location info by {@link Point}
+     *
      * @param point {@link Point} to parse.
      * @return location info
      */
@@ -109,6 +123,7 @@ public class LocationParserEngine {
         RegionInfo prov = null;
         RegionInfo city = null;
         RegionInfo district = null;
+        RegionInfo street = null;
 
         for (RegionInfo regionInfo : provinceSet) {
             if (regionInfo.contain(point)) {
@@ -121,11 +136,11 @@ public class LocationParserEngine {
             return null;
         }
 
-        Integer provCode = prov.getCode();
+        String provCode = prov.getCode();
         Set<RegionInfo> citySet = provCitySetMap.get(provCode);
 
         if (citySet == null) {
-            return new Location(prov, null, null);
+            return new Location(prov, null, null, null);
         }
 
         for (RegionInfo regionInfo : citySet) {
@@ -136,14 +151,14 @@ public class LocationParserEngine {
         }
 
         if (city == null) {
-            return new Location(prov, null, null);
+            return new Location(prov, null, null, null);
         }
 
-        Integer cityCode = city.getCode();
+        String cityCode = city.getCode();
         Set<RegionInfo> districtSet = cityDistrictSetMap.get(cityCode);
 
         if (districtSet == null) {
-            return new Location(prov, city, null);
+            return new Location(prov, city, null, null);
         }
 
         for (RegionInfo regionInfo : districtSet) {
@@ -152,14 +167,28 @@ public class LocationParserEngine {
                 break;
             }
         }
+        String districtCode = district.getCode();
+        Set<RegionInfo> streetSet = districtStreetSetMap.get(districtCode);
 
-        return new Location(prov, city, district);
+        if (streetSet == null) {
+            return new Location(prov, city, district, null);
+        }
+
+        for (RegionInfo regionInfo : streetSet) {
+            if (regionInfo.contain(point)) {
+                street = regionInfo;
+                break;
+            }
+        }
+
+        return new Location(prov, city, district, street);
     }
 
     /**
      * Get location info by longitude/latitude
-     * @param lon  longitude
-     * @param lat  latitude
+     *
+     * @param lon longitude
+     * @param lat latitude
      * @return location info
      */
     public Location parse(double lon, double lat) {
@@ -170,7 +199,8 @@ public class LocationParserEngine {
 
     /**
      * Get region info by {@code region.code}
-     * @param code  region code
+     *
+     * @param code region code
      * @return region info
      */
     public RegionInfo getRegionInfo(int code) {
@@ -179,7 +209,8 @@ public class LocationParserEngine {
 
     /**
      * Get region info by {@code region.name}
-     * @param name  region name
+     *
+     * @param name region name
      * @return region info
      */
     public RegionInfo getRegionInfo(String name) {
@@ -188,7 +219,8 @@ public class LocationParserEngine {
 
     /**
      * Get sub region info list by {@code region.code}
-     * @param code  region code
+     *
+     * @param code region code
      * @return region info
      */
     public List<RegionInfo> getSubRegionInfoList(int code) {

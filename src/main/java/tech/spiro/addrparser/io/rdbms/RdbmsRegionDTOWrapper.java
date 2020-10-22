@@ -21,8 +21,8 @@ public class RdbmsRegionDTOWrapper extends RegionDTO {
     }
 
     public void read(ResultSet rs) throws SQLException {
-        this.setCode(rs.getInt("code"));
-        this.setParentCode(rs.getInt("parent_code"));
+        this.setCode(rs.getString("code"));
+        this.setParentCode(rs.getString("parent_code"));
         this.setName(rs.getString("name"));
         this.setLevel(RegionLevel.valueOf(rs.getInt("level")));
         this.setCenter(rs.getString("center"));
@@ -30,8 +30,8 @@ public class RdbmsRegionDTOWrapper extends RegionDTO {
     }
 
     public void write(PreparedStatement stmt) throws SQLException {
-        stmt.setInt(    1, this.getCode());
-        stmt.setInt(    2, this.getParentCode());
+        stmt.setString(    1, this.getCode());
+        stmt.setString(    2, this.getParentCode());
         stmt.setString( 3, this.getName());
         stmt.setInt(    4, this.getLevel().ordinal());
         stmt.setString( 5, this.getCenter());
@@ -39,22 +39,22 @@ public class RdbmsRegionDTOWrapper extends RegionDTO {
     }
 
     @Override
-    public int getParentCode() {
+    public String getParentCode() {
         return this.regionDTO.getParentCode();
     }
 
     @Override
-    public void setParentCode(int parentCode) {
+    public void setParentCode(String parentCode) {
         this.regionDTO.setParentCode(parentCode);
     }
 
     @Override
-    public int getCode() {
+    public String getCode() {
         return this.regionDTO.getCode();
     }
 
     @Override
-    public void setCode(int code) {
+    public void setCode(String code) {
         this.regionDTO.setCode(code);
     }
 

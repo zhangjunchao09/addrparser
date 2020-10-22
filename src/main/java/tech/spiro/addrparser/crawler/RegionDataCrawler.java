@@ -26,7 +26,7 @@ public class RegionDataCrawler {
     private static final Logger LOG = LoggerFactory.getLogger(RegionDataCrawler.class);
 
     // country root code
-    public static final int COUNTRY_CODE = 100000;
+    public static String COUNTRY_CODE = "100000";
 
     private AtomicInteger invokerCount = new AtomicInteger(0);
 
@@ -41,10 +41,10 @@ public class RegionDataCrawler {
         this.amapKey = amapKey;
     }
 
-    private List<RegionDTO> getSubRegionDTOs(int code) throws GetRegionException {
+    private List<RegionDTO> getSubRegionDTOs(String code) throws GetRegionException {
 
         RestClient restClient = new RestClient();
-        restClient.setKeywords(Integer.toString(code));
+        restClient.setKeywords(code);
         restClient.setKey(this.amapKey);
         restClient.setExtensions("base");
         restClient.setSubdistrict("1");
@@ -75,7 +75,7 @@ public class RegionDataCrawler {
                 RegionDTO regionDTO = new RegionDTO();
 
                 try {
-                    regionDTO.setCode(Integer.valueOf(regionResp.getAdcode()));
+                    regionDTO.setCode(regionResp.getAdcode());
                     regionDTO.setLevel(RegionLevel.valueOf(regionResp.getLevel().toUpperCase()));
                     regionDTO.setCenter(regionResp.getCenter());
                     regionDTO.setParentCode(code);
@@ -93,7 +93,7 @@ public class RegionDataCrawler {
             RestClient subRestClient = new RestClient();
             subRestClient.setExtensions("all");
             subRestClient.setKey(this.amapKey);
-            subRestClient.setKeywords(Integer.toString(subRegionDTO.getCode()));
+            subRestClient.setKeywords(subRegionDTO.getCode());
             subRestClient.setSubdistrict("0");
 
             DataResp subDataResp = subRestClient.getDistrictResponse();
@@ -138,7 +138,7 @@ public class RegionDataCrawler {
         }
     }
 
-    public void loadProv(int provCode) throws GetRegionException {
+    public void loadProv(String provCode) throws GetRegionException {
         if (regionOutput == null) {
             throw new GetRegionException("<regionOutput> is null.");
         }
@@ -152,7 +152,7 @@ public class RegionDataCrawler {
         }
     }
 
-    public void loadCity(int cityCode) throws GetRegionException {
+    public void loadCity(String cityCode) throws GetRegionException {
         if (regionOutput == null) {
             throw new GetRegionException("<regionOutput> is null.");
         }

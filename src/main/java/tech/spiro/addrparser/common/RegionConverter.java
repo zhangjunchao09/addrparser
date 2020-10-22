@@ -14,9 +14,9 @@ public class RegionConverter {
         RegionInfo.Builder builder = new RegionInfo.Builder();
 
         // parentCode
-        builder.parentCode(Integer.valueOf(regionDTO.getParentCode()));
+        builder.parentCode(regionDTO.getParentCode());
         // code
-        builder.code(Integer.valueOf(regionDTO.getCode()));
+        builder.code(regionDTO.getCode());
         // name
         builder.name(regionDTO.getName());
 

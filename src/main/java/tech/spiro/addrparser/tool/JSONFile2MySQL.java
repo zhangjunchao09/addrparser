@@ -100,6 +100,7 @@ public class JSONFile2MySQL {
         dataSource.setDatabaseName(mysqlDB);
         dataSource.setUser(mysqlUser);
         dataSource.setPassword(mysqlPassword);
+        dataSource.setCharacterEncoding("utf-8");
 
         try {
             Connection connection = dataSource.getConnection();

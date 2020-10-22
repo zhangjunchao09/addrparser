@@ -6,8 +6,8 @@ package tech.spiro.addrparser.common;
  * @since 1.0
  */
 public class RegionDTO {
-    private int parentCode;
-    private int code;
+    private String parentCode;
+    private String code;
     private String name;
 
     /**
@@ -26,19 +26,19 @@ public class RegionDTO {
      */
     private String polyline;
 
-    public int getParentCode() {
+    public String getParentCode() {
         return parentCode;
     }
 
-    public void setParentCode(int parentCode) {
+    public void setParentCode(String parentCode) {
         this.parentCode = parentCode;
     }
 
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(String code) {
         this.code = code;
     }
 

@@ -43,9 +43,9 @@ public class CrawlerServer {
             }
 
             String out = cmd.getOptionValue('o');
-            int _code = 0;
+            String _code = "0";
             try {
-                _code = Integer.valueOf(code);
+                _code = code;
             } catch (NumberFormatException e) {
                 throw new ParseException("code must be numeric.");
             }
@@ -59,7 +59,7 @@ public class CrawlerServer {
         }
     }
 
-    private static void execute(String amapKey, String level, int code, String out) throws IOException, GetRegionException {
+    private static void execute(String amapKey, String level, String code, String out) throws IOException, GetRegionException {
         try (RegionDataOutput regionOutput = new JSONFileRegionDataOutput(out)) {
             RegionDataCrawler infoLoader = new RegionDataCrawler(regionOutput, amapKey);
 

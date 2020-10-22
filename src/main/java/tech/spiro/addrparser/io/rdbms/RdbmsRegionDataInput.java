@@ -13,11 +13,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * Input region data from rdbms.
- * @author Spiro Huang
- * @since 1.0
- */
 public class RdbmsRegionDataInput implements RegionDataInput {
 
     private static final Logger LOG = LoggerFactory.getLogger(RdbmsRegionDataInput.class);

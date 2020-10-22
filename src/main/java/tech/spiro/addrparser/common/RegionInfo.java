@@ -11,8 +11,8 @@ import java.util.List;
  */
 public class RegionInfo {
 
-    private final int parentCode;
-    private final int code;
+    private final String parentCode;
+    private final String code;
     private final String name;
     private final RegionLevel level;
     private final Point center;
@@ -30,11 +30,11 @@ public class RegionInfo {
         containPointJudge.initPolygons(this.polyline);
     }
 
-    public int getParentCode() {
+    public String getParentCode() {
         return parentCode;
     }
 
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
@@ -69,8 +69,8 @@ public class RegionInfo {
     }
 
     public static class Builder {
-        private int parentCode;
-        private int code;
+        private String parentCode;
+        private String code;
         private String name;
         private RegionLevel level;
         private Point center;
@@ -79,12 +79,12 @@ public class RegionInfo {
         public Builder() {
         }
 
-        public Builder code(int code) {
+        public Builder code(String code) {
             this.code = code;
             return this;
         }
 
-        public Builder parentCode(int parentCode) {
+        public Builder parentCode(String parentCode) {
             this.parentCode = parentCode;
             return this;
         }
